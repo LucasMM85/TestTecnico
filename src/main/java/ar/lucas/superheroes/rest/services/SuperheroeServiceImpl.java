@@ -19,40 +19,41 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SuperheroeServiceImpl implements SuperheroeService {
 
-    private final SuperheroeRepository superheroeRepository;
+    private final SuperheroeRepository repository;
 
     @Override
     public List<Superheroe> findAll() {
-        return superheroeRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
     public Superheroe findById(Long id) {
-
-        Optional<Superheroe> opt = superheroeRepository.findById(id);
-
+        Optional<Superheroe> opt = repository.findById(id);
         if (opt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El superhéroe solicitado no existe.");
         }
-
         return opt.get();
     }
 
     @Override
     public List<Superheroe> buscar(String criterio) {
-        return superheroeRepository.findAllByNombreContainingIgnoreCase(criterio.toUpperCase());
+        List<Superheroe> superheroes = repository.findAllByNombreContainingIgnoreCase(criterio.toUpperCase());
+        if (superheroes.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró el super héroe buscado");
+        }
+        return superheroes;
     }
 
     @Override
     public void update(Superheroe superHeroe) {
-        if (!superheroeRepository.existsById(superHeroe.getId())) {
+        if (!repository.existsById(superHeroe.getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El héroe provisto no se encuentra cargado");
         }
-        superheroeRepository.save(superHeroe);
+        repository.save(superHeroe);
     }
 
     @Override
     public void delete(Long id) {
-        superheroeRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }
