@@ -5,6 +5,7 @@ import ar.lucas.superheroes.rest.services.SuperheroeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -19,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,9 +43,16 @@ public class SuperheroesIntegrationTest {
     @Autowired
     private SuperheroeService service;
 
+    @Value("${apikey.name}")
+    private String header;
+
+    @Value("${apikey.value}")
+    private String headerValue;
+
     @Test
     void getAll_shouldReturnSuperheroeList() throws Exception {
-        mvc.perform(get("/superheroes"))
+        mvc.perform(get("/superheroes")
+                    .header(header, headerValue))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -54,7 +61,8 @@ public class SuperheroesIntegrationTest {
     void getById_shouldReturnSuperheroe() throws Exception {
         Long id = 1L;
 
-        mvc.perform(get("/superheroes/{id}", id))
+        mvc.perform(get("/superheroes/{id}", id)
+                .header(header, headerValue))
                 .andExpect(status().isOk());
     }
 
@@ -62,7 +70,8 @@ public class SuperheroesIntegrationTest {
     void getById_shouldReturnSuperheroeNotFound() throws Exception {
         Long id = 55L;
 
-        mvc.perform(get("/superheroes/{id}", id))
+        mvc.perform(get("/superheroes/{id}", id)
+                .header(header, headerValue))
                 .andExpect(status().isNotFound());
     }
 
@@ -70,7 +79,8 @@ public class SuperheroesIntegrationTest {
     void buscar_shouldReturnSuperheroe() throws Exception {
         String criterio = "man";
 
-        mvc.perform(get("/superheroes/busqueda/{criterio}", criterio))
+        mvc.perform(get("/superheroes/busqueda/{criterio}", criterio)
+                .header(header, headerValue))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty());
     }
@@ -79,7 +89,8 @@ public class SuperheroesIntegrationTest {
     void buscar_shouldReturnNotFound() throws Exception {
         String criterio = "josesito";
 
-        mvc.perform(get("/superheroes/busqueda/{criterio}", criterio))
+        mvc.perform(get("/superheroes/busqueda/{criterio}", criterio)
+                .header(header, headerValue))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status", is(404)));
     }
@@ -90,8 +101,8 @@ public class SuperheroesIntegrationTest {
 
         mvc.perform(put("/superheroes")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(superheroe)))
-                .andDo(print())
+                .content(objectMapper.writeValueAsString(superheroe))
+                .header(header, headerValue))
                 .andExpect(status().isNoContent());
 
         Superheroe modificado = service.findById(1L);
@@ -104,7 +115,8 @@ public class SuperheroesIntegrationTest {
 
         mvc.perform(put("/superheroes")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(superheroe)))
+                .content(objectMapper.writeValueAsString(superheroe))
+                .header(header, headerValue))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status", is(404)));
     }
@@ -113,7 +125,8 @@ public class SuperheroesIntegrationTest {
     void delete_shouldReturnNoContentAndVerifyDeletion() throws Exception {
         Long id = 1L;
 
-        mvc.perform(delete("/superheroes/{id}", id))
+        mvc.perform(delete("/superheroes/{id}", id)
+                .header(header, headerValue))
                 .andExpect(status().isNoContent());
 
         assertThrows(ResponseStatusException.class, () -> service.findById(1L));
@@ -123,7 +136,8 @@ public class SuperheroesIntegrationTest {
     void delete_shouldReturnNotFound() throws Exception {
         Long id = 555L;
 
-        mvc.perform(delete("/superheroes/{id}", id))
+        mvc.perform(delete("/superheroes/{id}", id)
+                .header(header, headerValue))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status", is(404)));
     }
