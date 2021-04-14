@@ -1,5 +1,6 @@
 package ar.lucas.superheroes.exception;
 
+import ar.lucas.superheroes.annotations.Contar;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ResponseStatusException.class})
+    @Contar
     protected ResponseEntity<?> handleRuntimeException(ResponseStatusException ex, WebRequest request) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", ex.getRawStatusCode());
