@@ -54,6 +54,9 @@ public class SuperheroeServiceImpl implements SuperheroeService {
 
     @Override
     public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El héroe provisto no se encuentra cargado");
+        }
         repository.deleteById(id);
     }
 }
