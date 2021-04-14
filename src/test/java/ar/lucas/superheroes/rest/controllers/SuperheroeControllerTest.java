@@ -2,6 +2,7 @@ package ar.lucas.superheroes.rest.controllers;
 
 import ar.lucas.superheroes.rest.models.entity.Superheroe;
 import ar.lucas.superheroes.rest.services.SuperheroeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -36,6 +37,9 @@ public class SuperheroeControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private SuperheroeService service;
@@ -103,7 +107,7 @@ public class SuperheroeControllerTest {
         mvc.perform(put("/superheroes")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaType.APPLICATION_JSON)
-                    .content(superheroe.toJson()))
+                    .content(objectMapper.writeValueAsString(superheroe)))
                 .andExpect(status().isNoContent());
     }
 
@@ -114,7 +118,7 @@ public class SuperheroeControllerTest {
         mvc.perform(put("/superheroes")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(superheroe.toJson()))
+                .content(objectMapper.writeValueAsString(superheroe)))
                 .andExpect(status().isNotFound());
     }
 

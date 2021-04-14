@@ -26,13 +26,4 @@ public class Superheroe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-
-    public String toJson() {
-        return "{\"id\":" +
-                id +
-                "," +
-                "\"nombre\":\"" +
-                nombre +
-                "\"}";
-    }
 }
