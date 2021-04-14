@@ -3,6 +3,8 @@ package ar.lucas.superheroes.rest.services;
 import ar.lucas.superheroes.rest.models.entity.Superheroe;
 import ar.lucas.superheroes.rest.repository.SuperheroeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,6 +24,7 @@ public class SuperheroeServiceImpl implements SuperheroeService {
     private final SuperheroeRepository repository;
 
     @Override
+    @Cacheable("superheroes")
     public List<Superheroe> findAll() {
         return repository.findAll();
     }
@@ -45,6 +48,7 @@ public class SuperheroeServiceImpl implements SuperheroeService {
     }
 
     @Override
+    @CacheEvict(value = "superheroes", allEntries = true)
     public void update(Superheroe superHeroe) {
         if (!repository.existsById(superHeroe.getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El héroe provisto no se encuentra cargado");
@@ -53,6 +57,7 @@ public class SuperheroeServiceImpl implements SuperheroeService {
     }
 
     @Override
+    @CacheEvict("superheroes")
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El héroe provisto no se encuentra cargado");
