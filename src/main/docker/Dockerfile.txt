@@ -1,4 +1,4 @@
-FROM dockerfile/java:oracle-java8
+FROM openjdk:11-jre-slim
 
 MAINTAINER lmussi
 
