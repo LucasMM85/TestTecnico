@@ -1,0 +1,9 @@
+FROM dockerfile/java:oracle-java8
+
+MAINTAINER lmussi
+
+VOLUME /tmp
+ADD superheroes.jar /opt/superheroes/
+EXPOSE 8080
+WORKDIR /opt/superheroes/
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-Xms512m", "-Xmx1g", "-jar", "superheroes.jar"]
