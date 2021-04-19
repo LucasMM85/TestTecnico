@@ -6,6 +6,7 @@ import ar.lucas.superheroes.rest.services.SuperheroeService;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,28 +36,25 @@ public class SuperheroeController {
     }
 
     @GetMapping("/{id}")
-    @Contar
     public ResponseEntity<?> getById(@PathVariable Long id) {
         Superheroe superHeroe = service.findById(id);
         return ResponseEntity.ok(superHeroe);
     }
 
     @GetMapping("/busqueda/{criterio}")
-    @Contar
     public ResponseEntity<?> buscar(@PathVariable String criterio) {
         List<Superheroe> superHeroes = service.buscar(criterio);
         return ResponseEntity.ok(superHeroes);
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping
-    @Contar
     public ResponseEntity<?> update(@RequestBody Superheroe superHeroe) {
         service.update(superHeroe);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    @Contar
     public  ResponseEntity<?> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();

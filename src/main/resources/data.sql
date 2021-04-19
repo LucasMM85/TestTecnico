@@ -6,7 +6,7 @@ CREATE TABLE superheroes (id INT AUTO_INCREMENT  PRIMARY KEY,
 INSERT INTO superheroes (nombre) VALUES
 ('Superman'),
 ('Batman'),
-('Spiderman'),
+('Spider Man'),
 ('Captain Marvel'),
 ('Ghost Rider'),
 ('Manolito el fuerte');
