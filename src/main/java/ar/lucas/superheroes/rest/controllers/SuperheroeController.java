@@ -1,6 +1,7 @@
 package ar.lucas.superheroes.rest.controllers;
 
 import ar.lucas.superheroes.annotations.Contar;
+import ar.lucas.superheroes.rest.models.dto.SuperheroeDTO;
 import ar.lucas.superheroes.rest.models.entity.Superheroe;
 import ar.lucas.superheroes.rest.services.SuperheroeService;
 import lombok.AllArgsConstructor;
@@ -31,25 +32,25 @@ public class SuperheroeController {
 
     @GetMapping
     @Contar
-    public ResponseEntity<List<Superheroe>> getAll() {
+    public ResponseEntity<List<SuperheroeDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
-        Superheroe superHeroe = service.findById(id);
+        SuperheroeDTO superHeroe = service.findById(id);
         return ResponseEntity.ok(superHeroe);
     }
 
     @GetMapping("/busqueda/{criterio}")
     public ResponseEntity<?> buscar(@PathVariable String criterio) {
-        List<Superheroe> superHeroes = service.buscar(criterio);
+        List<SuperheroeDTO> superHeroes = service.buscar(criterio);
         return ResponseEntity.ok(superHeroes);
     }
 
     @Secured("ROLE_ADMIN")
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody Superheroe superHeroe) {
+    public ResponseEntity<?> update(@RequestBody SuperheroeDTO superHeroe) {
         service.update(superHeroe);
         return ResponseEntity.noContent().build();
     }

@@ -1,6 +1,6 @@
 package ar.lucas.superheroes.rest.services;
 
-import ar.lucas.superheroes.rest.models.entity.Superheroe;
+import ar.lucas.superheroes.rest.models.dto.SuperheroeDTO;
 
 import java.util.List;
 
@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface SuperheroeService {
 
-    List<Superheroe> findAll();
+    List<SuperheroeDTO> findAll();
 
-    Superheroe findById(Long id);
+    SuperheroeDTO findById(Long id);
 
-    List<Superheroe> buscar(String criterio);
+    List<SuperheroeDTO> buscar(String criterio);
 
-    void update(Superheroe superHeroe);
+    void update(SuperheroeDTO superHeroe);
 
     void delete(Long id);
 }

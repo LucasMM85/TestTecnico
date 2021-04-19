@@ -1,11 +1,15 @@
 package ar.lucas.superheroes.rest.services;
 
+import ar.lucas.superheroes.rest.models.dto.SuperheroeDTO;
 import ar.lucas.superheroes.rest.models.entity.Superheroe;
+import ar.lucas.superheroes.rest.models.mappers.SuperheroeMapper;
 import ar.lucas.superheroes.rest.repository.SuperheroeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,6 +34,9 @@ public class SuperheroeServiceTest {
 
     @Mock
     private SuperheroeRepository superheroeRepository;
+
+    @Spy
+    private final SuperheroeMapper superheroeMapper = Mappers.getMapper(SuperheroeMapper.class);
 
     @InjectMocks
     private SuperheroeServiceImpl superHeroeService;
@@ -57,7 +64,7 @@ public class SuperheroeServiceTest {
     void getSuperheroeById_shouldReturnSuperheroe() {
         Superheroe superHeroe = new Superheroe(1L, "Superman");
         when(superheroeRepository.findById(any(Long.class))).thenReturn(Optional.of(superHeroe));
-        Superheroe superHeroeObtenido = superHeroeService.findById(1L);
+        SuperheroeDTO superHeroeObtenido = superHeroeService.findById(1L);
         assertThat(superHeroeObtenido).isNotNull();
     }
 

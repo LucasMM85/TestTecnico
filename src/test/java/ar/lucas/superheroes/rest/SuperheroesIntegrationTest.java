@@ -1,5 +1,6 @@
 package ar.lucas.superheroes.rest;
 
+import ar.lucas.superheroes.rest.models.dto.SuperheroeDTO;
 import ar.lucas.superheroes.rest.models.entity.Superheroe;
 import ar.lucas.superheroes.rest.services.SuperheroeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -90,14 +91,14 @@ public class SuperheroesIntegrationTest {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     void update_shouldReturnNoContentandVerifyValue() throws Exception {
-        Superheroe superheroe = new Superheroe(1L, "Superman modificado");
+        SuperheroeDTO superheroe = new SuperheroeDTO(1L, "Superman modificado");
 
         mvc.perform(put("/superheroes")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(superheroe)))
                 .andExpect(status().isNoContent());
 
-        Superheroe modificado = service.findById(1L);
+        SuperheroeDTO modificado = service.findById(1L);
         assertThat(modificado.getNombre()).isEqualTo("Superman modificado");
     }
 

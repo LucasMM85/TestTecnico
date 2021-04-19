@@ -1,6 +1,8 @@
 package ar.lucas.superheroes.rest.services;
 
+import ar.lucas.superheroes.rest.models.dto.SuperheroeDTO;
 import ar.lucas.superheroes.rest.models.entity.Superheroe;
+import ar.lucas.superheroes.rest.models.mappers.SuperheroeMapper;
 import ar.lucas.superheroes.rest.repository.SuperheroeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,38 +24,41 @@ import java.util.Optional;
 public class SuperheroeServiceImpl implements SuperheroeService {
 
     private final SuperheroeRepository repository;
+    private final SuperheroeMapper superheroeMapper;
 
     @Override
     @Cacheable("superheroes")
-    public List<Superheroe> findAll() {
-        return repository.findAll();
+    public List<SuperheroeDTO> findAll() {
+        return superheroeMapper.toSuperheroe(repository.findAll());
     }
 
     @Override
-    public Superheroe findById(Long id) {
+    public SuperheroeDTO findById(Long id) {
         Optional<Superheroe> opt = repository.findById(id);
         if (opt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El superhéroe solicitado no existe.");
         }
-        return opt.get();
+        return superheroeMapper.toSuperheroe(opt.get());
     }
 
     @Override
-    public List<Superheroe> buscar(String criterio) {
+    public List<SuperheroeDTO> buscar(String criterio) {
         List<Superheroe> superheroes = repository.findAllByNombreContainingIgnoreCase(criterio.toUpperCase());
         if (superheroes.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró el super héroe buscado");
         }
-        return superheroes;
+        return superheroeMapper.toSuperheroe(superheroes);
     }
 
     @Override
     @CacheEvict(value = "superheroes", allEntries = true)
-    public void update(Superheroe superHeroe) {
-        if (!repository.existsById(superHeroe.getId())) {
+    public void update(SuperheroeDTO superHeroe) {
+        Superheroe superheroeDb = repository.findById(superHeroe.getId()).orElse(null);
+        if (superheroeDb == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El héroe provisto no se encuentra cargado");
         }
-        repository.save(superHeroe);
+        superheroeDb.setNombre(superHeroe.getNombre());
+        repository.save(superheroeDb);
     }
 
     @Override
